@@ -2,40 +2,55 @@
 
 import sys
 import re
+import tools
 
-def parser(polynom_str):
+def toMatrix(polynom):
 	matrix = [0, 0, 0]
-	polynom1 = []
-	polynom2 = []
 	power = -1
 
+	for i, elem in enumerate(polynom):
+		regexObj = re.match('(\-?\d*\*?(x|X)|\-?\d+)\^?\d*', elem)
+		if (regexObj and len(regexObj.group(0)) == len(elem)):
+			print('polynom #', i, ': \'', elem, '\'', sep='')
+			power = tools.get_power(elem)
+			if ((elem.find('x') != -1 or elem.find('X') != -1) and (power > 2 or power < 0)):
+				print("\033[1m\033[31mError: Polynom power bigger than 2 or negative\033[0m")
+				exit()
+			if (i > 0 and polynom[i - 1] == '-'):
+				matrix[power] += tools.parse_int(elem) * -1
+			else:
+				matrix[power] += tools.parse_int(elem)
+		else:
+			print('\033[1m\033[31mWarning! Incorrect polynom member (ignored): \'', elem, '\'\033[0m', sep='')
+
+	return matrix
+
+def parser(polynom_str):
+	matrix = []
+	polynom1 = []
+	polynom2 = []
+
 	if (polynom_str.find('(') != -1 or polynom_str.find(')') != -1):
-		print('Error: no bracket handling')
-		exit()
-	if (polynom_str.find('=') == -1):
-		print('Error: no equal sign')
+		print('\033[1m\033[31mError: no bracket handling\033[0m')
 		exit()
 
 	polynom_str = polynom_str.split('=')
-	polynom1 = polynom_str.split(' ')
-	polynom2 = polynom_str.split(' ')
+	polynom1 = list(filter(None, polynom_str[0].split(' ')))
+	if (len(polynom_str) > 1):
+		polynom2 = list(filter(None, polynom_str[1].split(' ')))
+	else:
+		print('\033[1m\033[31mWarning: no equal sign (ignored). Value by default: = 0\033[0m')
+		polynom2 = ['0']
 
-	for elem in polynom1:
-		if (elem.find('x') != -1 or elem.find('X') != -1):
-			if (elem.find('^') != -1 and elem.find('^') + 1 < len(elem)):
-				power = int(polynom1[elem.find('^') + 1:])
-				if (power > 2 or power < 0):
-					print("Error: Polynom power bigger than 2 or negative")
-					exit()
-				if (polynom1[polynom1.find(elem) - 1] == '-'):
-					matrix[power] += int(elem) * -1
-				else:
-					matrix[power] += int(elem)
-
+	polynom1 = tools.transform(polynom1)
+	print(polynom1)
+	matrix = toMatrix(polynom1)
 
 
 if __name__ == "__main__":
 	if len(sys.argv) == 1:
-		print("Error: no polynom!")
+		print("\033[1m\033[31mError: no polynom!\033[0m")
 		exit()
-	parser(sys.argv[1])
+
+	for i in range(1, len(sys.argv)):
+		parser(sys.argv[i])
