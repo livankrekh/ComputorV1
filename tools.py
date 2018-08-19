@@ -1,20 +1,40 @@
 import re
 
-def get_power(string):
+def get_number_power(string):
+	n = str()
+	regex = re.match('\-?\d+', string)
+
+	if (regex):
+		if (string.find('^') != -1):
+			n = string[string.find('^') + 1:]
+		else:
+			return 1 * int(regex.group(0))
+
+		try:
+			return power(int(regex.group(0)), int(n))
+		except ValueError:
+			return 1
+	else:
+		return 1
+
+def get_polynom_power(string):
 	n = str()
 
-	if (string.find('^') != -1 and string.find('^') < len(string) - 1):
-		n = string[string.find('^') + 1:]
+	if (string.find('x^') != -1 or string.find('X^') != -1):
+		if (string.find('^') != -1):
+			n = string[string.find('^') + 1:]
+		else:
+			return 1
 
 		try:
 			return int(n)
 		except ValueError:
 			return 1
+	elif (string.find('x') != -1 or string.find('X') != -1):
+		return 1
 	else:
-		if (string.find('x') != -1 or string.find('X') != -1):
-			return 1
-		else:
-			return 0
+		return 0
+			
 
 def power(n, power):
 	res = float(1)
@@ -33,6 +53,9 @@ def power(n, power):
 
 
 def parse_int(string):
+	expr_arr = []
+	res = 0
+
 	try:
 		return int(string)
 	except ValueError:
@@ -42,12 +65,35 @@ def parse_int(string):
 				return -1
 			else:
 				return 1
-		regex = re.match('\-?\d+\*?(x|X)?\^?\d*', string)
-		if (regex and len(regex.group(0)) == len(string)):
-			if (string.find('x') != -1 or string.find('X') != -1):
-				return int(re.match('\-?\d+', string).group(0))
-			return int(re.match('\-?\d+', string).group(0))
-		return 0
+		if (string.find('*') != -1):
+			res = 1
+			expr_arr = string.split('*')
+
+			for expr in expr_arr:
+				regex_number = re.match('\-?\d+', expr)
+				regex_x = re.match('\-?(x|X)\^?\d?', expr)
+				regex_d = re.match('\-?\d+\/\-?\d+', expr)
+
+				if (regex_d):
+					d_arr = expr.split('/')
+					res *= get_number_power(d_arr[0]) / get_number_power(d_arr[1])
+				elif (regex_x):
+					if (expr[0] == '-'):
+						res *= -1
+				elif (regex_number):
+					res *= get_number_power(regex_number.group(0))
+
+			return res
+		elif (string.find('/') != -1):
+			d_arr = string.split('/')
+			return get_number_power(d_arr[0]) / get_number_power(d_arr[1])
+		else:
+			regex_new = re.match('\-?\d+\^?\d*', string)
+
+			if (regex_new):
+				return get_number_power(regex_new.group(0))
+			else:
+				return 0
 
 def isSign(string):
 	regex = re.match('(\-|\+|\*|\/|\^)+', string)
