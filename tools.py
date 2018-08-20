@@ -70,7 +70,7 @@ def parse_int(string):
 			expr_arr = string.split('*')
 
 			for expr in expr_arr:
-				regex_number = re.match('\-?\d+', expr)
+				regex_number = re.match('\-?\d+\^?\d*', expr)
 				regex_x = re.match('\-?(x|X)\^?\d?', expr)
 				regex_d = re.match('\-?\d+\/\-?\d+', expr)
 

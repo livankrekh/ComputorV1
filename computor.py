@@ -9,7 +9,7 @@ def toMatrix(polynom):
 	power = -1
 
 	for i, elem in enumerate(polynom):
-		regexObj = re.match('((\-?\d*\*?)*\-?\d*(x|X)|(\-?\d+(\*|\/))*\-?\d+)\^?\d*', elem)
+		regexObj = re.match('((\-?\d*(\^\d+)?\*?)*\-?\d*(x|X)|(\-?\d+(\^\d+)?(\/?\-?\d+)?\*)*\-?\d+)\^?\d*', elem)
 		if (regexObj and len(regexObj.group(0)) == len(elem)):
 			print('polynom #', i, ': \'', elem, '\'', sep='')
 			power = tools.get_polynom_power(elem)
@@ -41,14 +41,8 @@ def parser(polynom_str):
 
 	polynom1 = tools.transform(polynom1)
 	polynom2 = tools.transform(polynom2)
-	print(polynom1)
-	print(polynom2)
 	matrix = toMatrix(polynom1)
 	matrix2 = toMatrix(polynom2)
-
-	print(matrix)
-	print(matrix2)
-
 
 if __name__ == "__main__":
 	if len(sys.argv) == 1:
