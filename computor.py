@@ -9,7 +9,7 @@ def toMatrix(polynom):
 	power = -1
 
 	for i, elem in enumerate(polynom):
-		regexObj = re.match('((\-?\d*(\^\d+)?\*?)*\-?\d*(x|X)|(\-?\d+(\^\d+)?(\/?\-?\d+)?\*)*\-?\d+)\^?\d*', elem)
+		regexObj = re.match('((\-?\d*(\.\d+)?(\^\d+)?\*?)*\-?\d*(x|X)|(\-?\d+(\.\d+)?(\^\d+)?(\/?\-?\d+)?\*)*\-?\d+)\^?\d*', elem)
 		if (regexObj and len(regexObj.group(0)) == len(elem)):
 			power = tools.get_polynom_power(elem)
 			if (power > 2 or power < 0):
@@ -41,11 +41,11 @@ def parser(polynom_str, flag):
 	polynom1 = tools.transform(polynom1)
 	polynom2 = tools.transform(polynom2)
 
-	if (polynom1 == None or polynom1 == None):
-		return None
-
 	matrix = toMatrix(polynom1)
 	matrix2 = toMatrix(polynom2)
+
+	if (matrix == None or matrix2 == None):
+		return None
 
 	if (flag):
 		print("STEP 1: ", str(matrix[2]) + " * X^2 + " if matrix[2] != 0 else ""
@@ -92,11 +92,14 @@ if __name__ == "__main__":
 					print('D < 0')
 					print('\033[1m\033[32mComplex solution!\033[0m')
 				elif (tools.descr(matrix) == 0):
-					print('D = 0')
+					if (flag):
+						print('STEP 2: D = 0')
 					print('\033[1m\033[32mThe solution is: x =', str((matrix[1] * -1) / (matrix[2] * -2)), "\033[0m")
 				else:
-					print('D =', tools.descr(matrix))
-					print('\033[1m\033[32mThe solution is: x1 =')
+					if (flag):
+						print('STEP 2: D =', tools.descr(matrix))
+					print('\033[1m\033[32mThe solution is: x1 =', str( ((matrix[1] * -1) - tools.descr(matrix) ** 0.5) / (matrix[2] * 2) )
+																, ", x2 =", str( ((matrix[1] * -1) + tools.descr(matrix) ** 0.5) / (matrix[2] * 2) ))
 			elif (tools.degree(matrix) == 1):
 				print('\033[1m\033[32mThe solution is: x =', str((matrix[0] * -1) / matrix[1]), "\033[0m")
 			else:

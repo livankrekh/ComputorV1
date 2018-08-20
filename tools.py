@@ -8,16 +8,16 @@ def descr(matrix):
 
 def get_number_power(string):
 	n = str()
-	regex = re.match('\-?\d+', string)
+	regex = re.match('\-?\d+(\.\d+)?', string)
 
 	if (regex):
 		if (string.find('^') != -1):
 			n = string[string.find('^') + 1:]
 		else:
-			return 1 * int(regex.group(0))
+			return 1 * float(regex.group(0))
 
 		try:
-			return power(int(regex.group(0)), int(n))
+			return power(float(regex.group(0)), int(n))
 		except ValueError:
 			return 1
 	else:
@@ -63,7 +63,7 @@ def parse_int(string):
 	res = 0
 
 	try:
-		return int(string)
+		return float(string)
 	except ValueError:
 		regex = re.match('\-?(x|X)\^?\d?', string)
 		if (regex and len(regex.group(0)) == len(string)):
@@ -76,7 +76,7 @@ def parse_int(string):
 			expr_arr = string.split('*')
 
 			for expr in expr_arr:
-				regex_number = re.match('\-?\d+\^?\d*', expr)
+				regex_number = re.match('\-?\d+(\.\d+)?\^?\d*', expr)
 				regex_x = re.match('\-?(x|X)\^?\d?', expr)
 				regex_d = re.match('\-?\d+\/\-?\d+', expr)
 
