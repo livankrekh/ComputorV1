@@ -1,5 +1,11 @@
 import re
 
+def degree(matrix):
+	return 2 if matrix[2] != 0 else 1 if matrix[1] != 0 else 0
+
+def descr(matrix):
+	return (matrix[1] * matrix[1]) - (4 * matrix[2] * matrix[0])
+
 def get_number_power(string):
 	n = str()
 	regex = re.match('\-?\d+', string)
