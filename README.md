@@ -5,9 +5,9 @@ This project solve simple equation with degree less than 2
 ## Run: ./computor.py -d "equation #1" "equation #2" ...
 
 flag -d for solve details
-
+```
 For example: ./computor.py "20x + 12x^2 - 123134 = -x^1 + 10*121^12"
-
+```
 Output:
 
 > Polynomial degree is: 2
